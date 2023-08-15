@@ -5,6 +5,7 @@ import * as fb from '@/firebase';
 import { useEffect, useState } from 'react';
 import { Message } from '@/types';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import Send from './assets/send';
 
 let lastMessage = {}
 export default function Home() {
@@ -56,7 +57,12 @@ export default function Home() {
         }
         setIsLoading(true);
       });
-      for (let i = 0; i < messageList.length; i++) {
+       for (let i = 0; i < messageList.length; i++) {
+        if (!messageList[i - 1] || messageList[i].uid != messageList[i-1].uid) {
+          messageList[i].showName = true;
+         } else if (messageList[i].showName)
+          messageList[i].showName = false
+        console.log(messageList)
         const current = messageList[i];
         // list is inverted desc so next (more recent) is the element before
         const next = messageList[i - 1];
@@ -78,7 +84,7 @@ export default function Home() {
     let msg = message;
     const messageRef = fb.collection(fb.db, 'messages');
 
-    await fb.addDoc(messageRef, {text: msg, createdAt: fb.serverTimestamp(), uid: uid}).then(doc => {
+    await fb.addDoc(messageRef, {text: msg, createdAt: fb.serverTimestamp(), uid: uid, name: 'name'}).then(doc => {
       const messageRef = fb.doc(fb.db, 'messages', doc.id);
       fb.setDoc(messageRef, { messageId: doc.id }, { merge: true });
 
@@ -108,27 +114,35 @@ export default function Home() {
   });
 
   return (
-    <div className='flex flex-col bg-violet-300 max-w-3xl w-full px-5'>
+    <div className='flex flex-col max-w-3xl w-full'>
 
-      <input type="text" placeholder='uid' className='text-slate-900' onChange={(e) => setUid(e.target.value)} value={uid}/>
+      <div className='flex-row flex justify-between'>
+        <input type="text" placeholder='message' onChange={(e) => setUid(e.target.value)} value={uid}
+          className='placeholder:text-violet-400 text-neutral-800 bg-violet-300 flex h-16
+          flex-grow rounded-2xl pl-5 focus:outline-none focus:border-violet-400 focus:ring-violet-400 focus:ring-2'/>
+      </div>
 
-      <button onClick={sendMessage}>
-        press me
-      </button>
-      
-      <InfiniteScroll
-        dataLength={messages.length}
-        next={() => scrollLoad()}
-        hasMore={hasMore}
-        endMessage={<p style={{textAlign: 'center', color: '#820bff '}}>the beginning</p>}
-        loader={isLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
-        className='flex flex-col-reverse w-100 items-start pb-4'
-        style={{ overflow: 'visible' }}
-        
-      >
-        {messageItem}
-      </InfiniteScroll>
-      <input type="text" placeholder='message' className='text-slate-900' onChange={(e) => setMessage(e.target.value)} value={message}/>
+      <div className='flex flex-col bg-violet-300 max-w-3xl w-full px-5 my-8 rounded-2xl'>
+        <InfiniteScroll
+          dataLength={messages.length}
+          next={() => scrollLoad()}
+          hasMore={hasMore}
+          endMessage={<p style={{textAlign: 'center', color: '#820bff '}}>the beginning</p>}
+          loader={isLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
+          className='flex flex-col-reverse w-100 items-start pb-4'
+          style={{ overflow: 'visible' }}>
+          {messageItem}
+        </InfiniteScroll>
+      </div>
+      <div className='flex-row flex justify-between'>
+        <input type="text" placeholder='message' onChange={(e) => setMessage(e.target.value)} value={message}
+          className='placeholder:text-violet-400 text-neutral-800 bg-violet-300 flex 
+          flex-grow rounded-2xl pl-5 focus:outline-none focus:border-violet-400 focus:ring-violet-400 focus:ring-2'/>
+        <button disabled={message.trim() === ''} onClick={sendMessage}
+          className=' disabled:opacity-50 bg-violet-300 rounded-2xl w-16 h-16 justify-center items-center flex ml-8'>
+          <Send/>
+        </button>
+      </div>
     </div>
   )
 }
@@ -140,18 +154,23 @@ interface MessageProp {
 const MessageItem: React.FC<MessageProp> = ({msg, uid}) => {
   if (msg.uid != uid) {
     return (
-      <div className={'bg-blue-300 px-5 py-3 self-start ' + (msg.first ? 'receive-first' : msg.last ? 'receive-last' : 'receive-middle')}>     
-          <span>
+      <div>
+        <div className={'bg-blue-300 px-5 py-3 self-start ' + (msg.first ? 'receive-first' : msg.last ? 'receive-last' : 'receive-middle')}>   
+          <span className='text-neutral-800'>
             {msg.text}
           </span>
+          
+        </div>
+        {msg.showName ? ( <div className=' text-xs mt-1 mb-3'> <span>{ msg.name }</span> </div>) : (<div />)}  
       </div>
+
     );
   } else {
     return (
       <div
         className={' bg-fuchsia-300 px-5 py-3 self-end flex ' +
           (msg.first ? 'send-first' : msg.last ? 'send-last' : 'send-middle')}>
-        <span style={{fontSize: 15, color: 'red'}}>{msg.text}</span>
+        <span className='text-neutral-800'>{msg.text}</span>
       </div>
     );
   }

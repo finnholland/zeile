@@ -6,6 +6,7 @@
   border-radius: 15px;
   border-bottom-right-radius: 5px;
   margin-bottom: 3px;
+  margin-top: 10px;
 }
 .send-middle {
   border-top-left-radius: 15px;
@@ -25,6 +26,7 @@
   border-radius: 15px;
   border-bottom-left-radius: 5px;
   margin-bottom: 3px;
+  margin-top: 10px;
 }
 .receive-middle {
   border-radius: 5px;
@@ -36,5 +38,4 @@
 .receive-last {
   border-radius: 15px;
   border-top-left-radius: 5px;
-  margin-bottom: 10px;
 }

@@ -5,5 +5,6 @@ export interface Message {
   uid: string;
   last: boolean;
   first: boolean;
-  showImage: boolean;
+  showName: boolean;
+  name: string;
 }
