@@ -4,19 +4,21 @@ import Image from 'next/image'
 import * as fb from '@/firebase';
 import { useEffect, useState } from 'react';
 import { Message } from '@/types';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 let lastMessage = {}
 export default function Home() {
   const [message, setMessage] = useState('');
+  const [uid, setUid] = useState('4Rowx7y8Lv80wuSepG65');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
 
-
-  let unsubSnapListener: any;
+  let  messagesListener: any;
   useEffect(() => {
     loadMessages();
 
-    return () => { unsubSnapListener() };
+    return () => {  messagesListener() };
   }, []);
 
   const loadMessages = async () => {
@@ -40,32 +42,21 @@ export default function Home() {
     );
     const q = fb.query(messageRef, fb.orderBy('createdAt', 'desc'), fb.limit(20));
 
-    unsubSnapListener = fb.onSnapshot(q, querySnapshot => {
+     messagesListener = fb.onSnapshot(q, querySnapshot => {
       querySnapshot.docChanges().forEach(change => {
-        const i = messageList.findIndex(d => d.mid === change.doc.data().mid);
+        const i = messageList.findIndex(d => d.messageId === change.doc.data().messageId);
         if (change.type === 'modified') {
-          if (i !== -1) {
-            messageList[i] = change.doc.data() as Message;
-          } else {
+          if (i === -1) {
+            console.log(change.doc.data().text)
             messageList.unshift(change.doc.data() as Message);
             messageList[0].last = true;
-            
-            messageList[1].last = change.doc.data().uid == messageList[1].uid ? false : true;
+            if (messageList[1])
+              messageList[1].last = change.doc.data().uid == messageList[1].uid ? false : true;
           }
-        }
-        if (change.type === 'removed') {
-          messageList.splice(i, 1);
         }
         setIsLoading(true);
       });
-      let showImage = false;
       for (let i = 0; i < messageList.length; i++) {
-        if (!showImage && messageList[i].uid != '4Rowx7y8Lv80wuSepG65') {
-          messageList[i].showImage = true;
-          showImage = true;
-        } else if (messageList[i].showImage) {
-          messageList[i].showImage = false;
-        }
         const current = messageList[i];
         // list is inverted desc so next (more recent) is the element before
         const next = messageList[i - 1];
@@ -77,33 +68,91 @@ export default function Home() {
           current.last = true;
         }
       }
-      setMessages(messageList);
+       
+      setMessages([...messageList]);
       setIsLoading(false);
     });
   };
 
   const sendMessage = async () => {
-    let msg = 'hello moon!';
+    let msg = message;
     const messageRef = fb.collection(fb.db, 'messages');
 
-    await fb.addDoc(messageRef, {text: msg, createdAt: fb.serverTimestamp(), uid: '4Rowx7y8Lv80wuSepG65'}).then(doc => {
+    await fb.addDoc(messageRef, {text: msg, createdAt: fb.serverTimestamp(), uid: uid}).then(doc => {
       const messageRef = fb.doc(fb.db, 'messages', doc.id);
-      fb.setDoc(messageRef, { mid: doc.id }, { merge: true });
+      fb.setDoc(messageRef, { messageId: doc.id }, { merge: true });
 
     });
   };
 
-  return (
-    <div className='flex flex-col'>
+  const scrollLoad = async () => {
+    if (lastMessage) {
+      const messageList: Message[] = []
+      const lazyLoad = fb.collection(fb.db, 'messages');
+      const q = fb.query(lazyLoad, fb.orderBy('createdAt', 'desc'), fb.startAfter(lastMessage), fb.limit(10));
+      const querySnapshot = await fb.getDocs(q);
+      querySnapshot.forEach(c => {
+        messageList.push(c.data() as Message);
+      });
+      const tempList: Message[] = messages.concat(messageList);
+      lastMessage = querySnapshot.docs[querySnapshot.docs.length - 1];
+      if (tempList.length <= 0) {
+        setHasMore(false)
+      }
+      setMessages(tempList);
+    }
+  }
+  
+  const messageItem = messages.map((i) => {
+    return <MessageItem key={i.messageId} msg={i} uid={uid}/>;
+  });
 
-    
+  return (
+    <div className='flex flex-col bg-violet-300 max-w-3xl w-full px-5'>
+
+      <input type="text" placeholder='uid' className='text-slate-900' onChange={(e) => setUid(e.target.value)} value={uid}/>
+
       <button onClick={sendMessage}>
         press me
       </button>
       
-      {messages.map((m) => (
-        <span>{m.text}</span>
-      ))}
+      <InfiniteScroll
+        dataLength={messages.length}
+        next={() => scrollLoad()}
+        hasMore={hasMore}
+        endMessage={<p style={{textAlign: 'center', color: '#820bff '}}>the beginning</p>}
+        loader={isLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
+        className='flex flex-col-reverse w-100 items-start pb-4'
+        style={{ overflow: 'visible' }}
+        
+      >
+        {messageItem}
+      </InfiniteScroll>
+      <input type="text" placeholder='message' className='text-slate-900' onChange={(e) => setMessage(e.target.value)} value={message}/>
     </div>
   )
 }
+
+interface MessageProp {
+  msg: Message,
+  uid: string,
+}
+const MessageItem: React.FC<MessageProp> = ({msg, uid}) => {
+  if (msg.uid != uid) {
+    return (
+      <div className={'bg-blue-300 px-5 py-3 self-start ' + (msg.first ? 'receive-first' : msg.last ? 'receive-last' : 'receive-middle')}>     
+          <span>
+            {msg.text}
+          </span>
+      </div>
+    );
+  } else {
+    return (
+      <div
+        className={' bg-fuchsia-300 px-5 py-3 self-end flex ' +
+          (msg.first ? 'send-first' : msg.last ? 'send-last' : 'send-middle')}>
+        <span style={{fontSize: 15, color: 'red'}}>{msg.text}</span>
+      </div>
+    );
+  }
+};

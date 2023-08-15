@@ -2,26 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+.send-first {
+  border-radius: 15px;
+  border-bottom-right-radius: 5px;
+  margin-bottom: 3px;
+}
+.send-middle {
+  border-top-left-radius: 15px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 15px;
+  margin-bottom: 3px;
+}
+.send-last {
+  border-radius: 15px;
+  border-top-right-radius: 5px;
+  margin-bottom: 10px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.receive-first {
+  border-radius: 15px;
+  border-bottom-left-radius: 5px;
+  margin-bottom: 3px;
+}
+.receive-middle {
+  border-radius: 5px;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border-bottom-left-radius: 5px;
+  margin-bottom: 3px;
+}
+.receive-last {
+  border-radius: 15px;
+  border-top-left-radius: 5px;
+  margin-bottom: 10px;
 }

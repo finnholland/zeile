@@ -1,6 +1,6 @@
 export interface Message {
   createdAt: Date;
-  mid: string;
+  messageId: string;
   text: string;
   uid: string;
   last: boolean;
