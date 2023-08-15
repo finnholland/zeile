@@ -8,12 +8,10 @@ export default function Page() {
   const router = useRouter()
  
   useEffect(() => {
-    if (localStorage.getItem('loggedIn')) {
+    if (localStorage.getItem('user')) {
       router.push('/chat')
     } else {
       router.push('/login', { scroll: false })
     }
   }, [])
- 
-  return <Link href="login">Login</Link>
 }

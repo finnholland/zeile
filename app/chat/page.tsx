@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react';
 import { Message, User } from '@/types';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Send from '../assets/send';
-import { useAppSelector } from '../hooks/Actions';
+import { useAppDispatch, useAppSelector } from '../hooks/Actions';
+import { setUser } from '../hooks/slices/userSlice';
 import Link from 'next/link';
 
 let lastMessage = {}
@@ -13,19 +14,17 @@ let lastMessage = {}
 
 export default function Chat() {
   const selector = useAppSelector(state => state);
+  const dispatch = useAppDispatch();
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [user, setUser] = useState<User>({
-    uid: '', name: '', colour: ''
-  });
 
   let  messagesListener: any;
   useEffect(() => {
     if (localStorage.getItem('user')) {
-      setUser(JSON.parse(localStorage.getItem('user') || ''))
+      dispatch(setUser(JSON.parse(localStorage.getItem('user') || '')));
     }
     loadMessages();
 
@@ -47,7 +46,7 @@ export default function Chat() {
     console.log(messageList)
   }
 
-    const createSnapListener = async (messageList: Message[]) => {
+  const createSnapListener = async (messageList: Message[]) => {
     const messageRef = fb.collection(
       fb.db,
       'messages'
@@ -134,7 +133,7 @@ export default function Chat() {
     <div className='flex flex-col max-w-3xl w-full'>
 
       <div className='flex-row flex justify-between h-8 w-full bg-violet-300 rounded-2xl'>
-        <Link href={'/login'}>logout</Link>
+        <Link href={'/login'} onClick={() => localStorage.clear()}>logout</Link>
       </div>
 
       <div className='flex flex-col bg-violet-300 max-w-3xl w-full px-5 my-8 rounded-2xl'>
