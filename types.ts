@@ -7,4 +7,11 @@ export interface Message {
   first: boolean;
   showName: boolean;
   name: string;
+  colour: string
+}
+export interface User {
+  createdAt: Date;
+  uid: string;
+  name: string;
+  colour: string
 }
