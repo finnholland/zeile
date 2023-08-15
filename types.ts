@@ -1,5 +1,7 @@
+import * as fb from '@/firebase'
+
 export interface Message {
-  createdAt: Date;
+  createdAt: fb.Timestamp;
   messageId: string;
   text: string;
   uid: string;
@@ -10,7 +12,6 @@ export interface Message {
   colour: string
 }
 export interface User {
-  createdAt: Date;
   uid: string;
   name: string;
   colour: string

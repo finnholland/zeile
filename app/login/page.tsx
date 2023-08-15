@@ -2,6 +2,8 @@
 import React, { useState } from 'react'
 import * as fb from '@/firebase'
 import { useRouter } from 'next/navigation';
+import { setUser } from '../hooks/slices/userSlice';
+import { useAppDispatch } from '../hooks/Actions';
 
 const colours = [
   'bg-green-400','bg-teal-400','bg-sky-400','bg-indigo-400','bg-purple-400','bg-pink-400','bg-rose-400'
@@ -11,11 +13,12 @@ const colours = [
 const Login = () => {
   const router = useRouter()
   const [name, setName] = useState('')
-  const [colour, setColour] = useState('bg-violet-300')
+  const [colour, setColour] = useState(colours[Math.floor(Math.random() * ((colours.length -1) - 0 + 1)) + 0])
 
+  const dispatch = useAppDispatch();
 
   const colourItem = colours.map((i) => {
-    return <div onClick={() => setColour(i)} className={`${i} w-8 h-8 rounded-lg ${i !== colours[colours.length-1] ? 'mr-6' : ''}`}/>;
+    return <div key={i} onClick={() => setColour(i)} className={`${i} w-8 h-8 rounded-lg ${i !== colours[colours.length-1] ? 'mr-6' : ''}`}/>;
   });
 
   const joinRoom = async () => {
@@ -24,7 +27,8 @@ const Login = () => {
     await fb.addDoc(userRef, {name: name, createdAt: fb.serverTimestamp(), colour: colour}).then(doc => {
       const userRef = fb.doc(fb.db, 'users', doc.id);
       fb.setDoc(userRef, { uid: doc.id }, { merge: true });
-      localStorage.setItem('user', JSON.stringify({uid: doc.id, name: name, colour: colour}))
+      localStorage.setItem('user', JSON.stringify({ uid: doc.id, name: name, colour: colour }))
+      dispatch(setUser({ uid: doc.id, name: name, colour: colour }));
     });
     
     router.push('/chat', { scroll: false })

@@ -5,17 +5,21 @@ import { useEffect, useState } from 'react';
 import { Message, User } from '@/types';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Send from '../assets/send';
+import { useAppSelector } from '../hooks/Actions';
+import Link from 'next/link';
 
 let lastMessage = {}
 
 
 export default function Chat() {
+  const selector = useAppSelector(state => state);
+
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [user, setUser] = useState<User>({
-    uid: '', name: '', colour: '', createdAt: new Date()
+    uid: '', name: '', colour: ''
   });
 
   let  messagesListener: any;
@@ -40,6 +44,7 @@ export default function Chat() {
     setMessages(messageList);
     lastMessage = querySnapshot.docs[querySnapshot.docs.length - 1];
     createSnapListener(messageList);
+    console.log(messageList)
   }
 
     const createSnapListener = async (messageList: Message[]) => {
@@ -90,7 +95,7 @@ export default function Chat() {
     let msg = message;
     const messageRef = fb.collection(fb.db, 'messages');
 
-    await fb.addDoc(messageRef, {text: msg, createdAt: fb.serverTimestamp(), uid: user.uid, name: user.name, colour: user.colour}).then(doc => {
+    await fb.addDoc(messageRef, {text: msg, createdAt: fb.serverTimestamp(), uid: selector.user.uid, name: selector.user.name, colour: selector.user.colour}).then(doc => {
       const messageRef = fb.doc(fb.db, 'messages', doc.id);
       fb.setDoc(messageRef, { messageId: doc.id }, { merge: true });
     });
@@ -116,7 +121,7 @@ export default function Chat() {
   }
   
   const messageItem = messages.map((i) => {
-    return <MessageItem key={i.messageId} msg={i} uid={user.uid}/>;
+    return <MessageItem key={i.messageId} msg={i} uid={selector.user.uid}/>;
   });
 
   const enterPress = (e: React.KeyboardEvent<HTMLInputElement>) =>{
@@ -129,6 +134,7 @@ export default function Chat() {
     <div className='flex flex-col max-w-3xl w-full'>
 
       <div className='flex-row flex justify-between h-8 w-full bg-violet-300 rounded-2xl'>
+        <Link href={'/login'}>logout</Link>
       </div>
 
       <div className='flex flex-col bg-violet-300 max-w-3xl w-full px-5 my-8 rounded-2xl'>

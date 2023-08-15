@@ -10,7 +10,7 @@ import {
   initializeFirestore, getFirestore, collection, doc,
   getDoc, addDoc, setDoc, updateDoc, getDocs,
   query, where, orderBy, onSnapshot, serverTimestamp,
-  limit, deleteDoc, startAfter
+  limit, deleteDoc, startAfter, Timestamp
 } from 'firebase/firestore';
 
 import {getStorage, ref, getDownloadURL, listAll, uploadBytes, uploadString} from 'firebase/storage';
@@ -42,7 +42,7 @@ export {
   initializeFirestore, getFirestore, collection, doc,
   getDoc, addDoc, setDoc, updateDoc, getDocs,
   query, where, orderBy, onSnapshot, serverTimestamp,
-  limit, deleteDoc, startAfter
+  limit, deleteDoc, startAfter, Timestamp
 };
 
 export {getStorage, ref, getDownloadURL, listAll, uploadBytes, uploadString};
