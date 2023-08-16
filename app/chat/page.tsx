@@ -130,21 +130,21 @@ export default function Chat() {
   };
 
   return (
-    <div className='flex flex-col max-w-3xl w-full'>
+    <div className='flex flex-col max-w-3xl w-full h-full py-10'>
 
-      <div className='flex-row flex justify-between h-8 w-full bg-violet-300 rounded-2xl'>
+      <div className='flex-row flex justify-between h-16 w-full bg-violet-300 rounded-2xl'>
         <Link href={'/login'} onClick={() => localStorage.clear()}>logout</Link>
       </div>
 
-      <div className='flex flex-col bg-violet-300 max-w-3xl w-full px-5 my-8 rounded-2xl'>
+      <div className='flex flex-col-reverse bg-violet-300 max-w-3xl h-4/5 max-h-full w-full px-5 my-8 rounded-2xl overflow-scroll'>
         <InfiniteScroll
           dataLength={messages.length}
           next={() => scrollLoad()}
           hasMore={hasMore}
-          endMessage={<p style={{textAlign: 'center', color: '#820bff '}}>the beginning</p>}
+          endMessage={<p style={{ textAlign: 'center', color: '#820bff' }}>the beginning</p>}
           loader={isLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
-          className='flex flex-col-reverse w-100 items-start pb-4'
-          style={{ overflow: 'visible' }}>
+          className='flex flex-col-reverse w-100 items-start py-4 h-full'
+          initialScrollY={1000000}>
           {messageItem}
         </InfiniteScroll>
       </div>
@@ -175,7 +175,7 @@ const MessageItem: React.FC<MessageProp> = ({msg, uid}) => {
           </span>
           
         </div>
-        {msg.showName ? ( <div className=' text-xs mt-1 mb-3'> <span>{ msg.name }</span> </div>) : (<div />)}  
+        {msg.showName ? ( <div className=' text-xs mb-3 text-neutral-700'> <span>{ msg.name }</span> </div>) : (<div />)}  
       </div>
 
     );
