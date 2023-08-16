@@ -69,20 +69,20 @@ export default function Chat() {
         setIsLoading(true);
       });
        for (let i = 0; i < messageList.length; i++) {
-        if (!messageList[i - 1] || messageList[i].uid != messageList[i-1].uid) {
-          messageList[i].showName = true;
-        } else if (messageList[i].showName)
-          messageList[i].showName = false
-        const current = messageList[i];
-        // list is inverted desc so next (more recent) is the element before
-        const next = messageList[i - 1];
-        const prev = messageList[i + 1];
-        if(prev == null || current.uid != prev.uid){
-          current.first = true;
-        }
-        else if(current.uid != next?.uid && current.uid == prev.uid){
-          current.last = true;
-        }
+          const current = messageList[i];
+          const next = messageList[i - 1];
+          const prev = messageList[i + 1];
+          if (!next || current.uid != next.uid) {
+            current.showName = true;
+          } else if (current.showName)
+            current.showName = false
+          // list is inverted desc so next (more recent) is the element before
+          if(prev == null || current.uid != prev.uid){
+            current.first = true;
+          }
+          else if(current.uid != next?.uid && current.uid == prev.uid){
+            current.last = true;
+          }
       }
        
       setMessages([...messageList]);
@@ -125,7 +125,6 @@ export default function Chat() {
           current.showName = false
         
         // list is inverted desc so next (more recent) is the element before
-
         if (prev == null || current.uid != prev.uid) {
           current.first = true;
         }
