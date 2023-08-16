@@ -43,7 +43,6 @@ export default function Chat() {
     setMessages(messageList);
     lastMessage = querySnapshot.docs[querySnapshot.docs.length - 1];
     createSnapListener(messageList);
-    console.log(messageList)
   }
 
   const createSnapListener = async (messageList: Message[]) => {
@@ -58,7 +57,6 @@ export default function Chat() {
         const i = messageList.findIndex(d => d.messageId === change.doc.data().messageId);
         if (change.type === 'modified') {
           if (i === -1) {
-            console.log(change.doc.data().text)
             messageList.unshift(change.doc.data() as Message);
             messageList[0].last = true;
             if (messageList[1])
@@ -72,7 +70,6 @@ export default function Chat() {
           messageList[i].showName = true;
          } else if (messageList[i].showName)
           messageList[i].showName = false
-        console.log(messageList)
         const current = messageList[i];
         // list is inverted desc so next (more recent) is the element before
         const next = messageList[i - 1];
@@ -136,7 +133,7 @@ export default function Chat() {
         <Link href={'/login'} onClick={() => localStorage.clear()}>logout</Link>
       </div>
 
-      <div className='flex flex-col-reverse bg-violet-300 max-w-3xl h-4/5 max-h-full w-full px-5 my-8 rounded-2xl overflow-scroll'>
+      <div id='scrollDiv' className='flex flex-col-reverse bg-violet-300 max-w-3xl h-4/5 max-h-full w-full px-5 my-8 rounded-2xl overflow-auto'>
         <InfiniteScroll
           dataLength={messages.length}
           next={() => scrollLoad()}
@@ -144,7 +141,10 @@ export default function Chat() {
           endMessage={<p style={{ textAlign: 'center', color: '#820bff' }}>the beginning</p>}
           loader={isLoading ? <div className="lds-ellipsis"><div></div><div></div><div></div><div></div></div> : null}
           className='flex flex-col-reverse w-100 items-start py-4 h-full'
-          initialScrollY={1000000}>
+          inverse
+          scrollableTarget='scrollDiv'
+          scrollThreshold={300}
+        >
           {messageItem}
         </InfiniteScroll>
       </div>
