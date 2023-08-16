@@ -17,6 +17,17 @@ export default function Chat() {
   const dispatch = useAppDispatch();
 
   const [message, setMessage] = useState('');
+  const [lastLoadedMsg, setLastLoadedMsg] = useState<Message>({
+    createdAt: fb.serverTimestamp() as fb.Timestamp,
+    messageId: '',
+    text: '',
+    uid: '',
+    last: false,
+    first: false,
+    showName: false,
+    name: '',
+    colour: ''
+  });
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -41,7 +52,14 @@ export default function Chat() {
       messageList.push(m.data() as Message);
     });
     setMessages(messageList);
-    lastMessage = querySnapshot.docs[querySnapshot.docs.length - 1];
+    if (querySnapshot.docs[querySnapshot.docs.length - 1]) {
+      lastMessage = querySnapshot.docs[querySnapshot.docs.length - 1];
+      const tempLastMessage = querySnapshot.docs[querySnapshot.docs.length - 1].data() as Message
+      tempLastMessage.showName = true;
+      tempLastMessage.first = true;
+      setLastLoadedMsg(tempLastMessage);
+    }
+
     createSnapListener(messageList);
   }
 
@@ -107,8 +125,36 @@ export default function Chat() {
       querySnapshot.forEach(c => {
         messageList.push(c.data() as Message);
       });
+
+      if (messageList[0] && messageList[0].uid == messages[messages.length - 1].uid) {
+        messages[messages.length - 1].last = true
+        messages[messages.length - 1].first = false
+      }
+      for (let i = 0; i < messageList.length; i++) {
+        if (!messageList[i - 1] || messageList[i].uid != messageList[i-1].uid) {
+          messageList[i].showName = true;
+        } else if (messageList[i].showName)
+          messageList[i].showName = false
+        const current = messageList[i];
+        // list is inverted desc so next (more recent) is the element before
+        const next = messageList[i - 1];
+        const prev = messageList[i + 1];
+        if(prev == null || current.uid != prev.uid){
+          current.first = true;
+        }
+        else if(current.uid != next?.uid && current.uid == prev.uid){
+          current.last =true;
+        }
+      }
+
       const tempList: Message[] = messages.concat(messageList);
-      lastMessage = querySnapshot.docs[querySnapshot.docs.length - 1];
+      if (querySnapshot.docs[querySnapshot.docs.length - 1]) {
+        lastMessage = querySnapshot.docs[querySnapshot.docs.length - 1];
+        const tempLastMessage = querySnapshot.docs[querySnapshot.docs.length - 1].data() as Message
+        tempLastMessage.showName = true;
+        tempLastMessage.first = true;
+        setLastLoadedMsg(tempLastMessage);
+      }
       if (tempList.length <= 0) {
         setHasMore(false)
       }
@@ -117,7 +163,7 @@ export default function Chat() {
   }
   
   const messageItem = messages.map((i) => {
-    return <MessageItem key={i.messageId} msg={i} uid={selector.user.uid}/>;
+    return <MessageItem key={i.messageId} msg={i} uid={selector.user.uid} lastLoadedMsg={lastLoadedMsg} />;
   });
 
   const enterPress = (e: React.KeyboardEvent<HTMLInputElement>) =>{
@@ -164,9 +210,10 @@ export default function Chat() {
 interface MessageProp {
   msg: Message,
   uid: string,
+  lastLoadedMsg: Message
 }
-const MessageItem: React.FC<MessageProp> = ({msg, uid}) => {
-  if (msg.uid != uid) {
+const MessageItem: React.FC<MessageProp> = ({ msg, uid, lastLoadedMsg }) => {
+  if (msg.uid != uid && lastLoadedMsg || !lastLoadedMsg) {
     return (
       <div>
         <div className={'px-5 py-3 self-start' + ` ${msg.colour} ` + (msg.first ? 'receive-first' : msg.last ? 'receive-last' : 'receive-middle')}>   
@@ -177,7 +224,6 @@ const MessageItem: React.FC<MessageProp> = ({msg, uid}) => {
         </div>
         {msg.showName ? ( <div className=' text-xs mb-3 text-neutral-700'> <span>{ msg.name }</span> </div>) : (<div />)}  
       </div>
-
     );
   } else {
     return (
