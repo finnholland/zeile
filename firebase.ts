@@ -17,12 +17,14 @@ import {getStorage, ref, getDownloadURL, listAll, uploadBytes, uploadString} fro
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAkrYArQpUyKRTVVXpW1YbY36o3tWfKOWw",
-  authDomain: "fh-zeile-test.firebaseapp.com",
-  projectId: "fh-zeile-test",
-  storageBucket: "fh-zeile-test.appspot.com",
-  messagingSenderId: "678966258286",
-  appId: "1:678966258286:web:00328b6c836894ce3fd47f"
+  apiKey: "AIzaSyCYwH_4IdnJLthMuprTLa0_fYJ-U8ss9cM",
+  authDomain: "fh-zeile.firebaseapp.com",
+  projectId: "fh-zeile",
+  storageBucket: "fh-zeile.appspot.com",
+  messagingSenderId: "508506307006",
+  appId: "1:508506307006:web:0549268002c71e887521ef",
+  measurementId: "G-WP3N652LHC"
+
 };
 
 // Initialize Firebase

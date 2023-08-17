@@ -13,7 +13,6 @@ provider "google-beta" {
   project = var.name
   zone    = var.zone
   region  = var.region
-  billing_project = var.name
   user_project_override = true
 }
 
@@ -26,7 +25,6 @@ resource "google_project" "gcp_project" {
   provider = google-beta
   project_id = var.name
   name       = var.name
-  billing_account = var.billing_account
   labels = {
     "firebase" = "enabled"
   }
@@ -41,8 +39,7 @@ resource "google_project_service" "gcp_service" {
     "firebase.googleapis.com",
     "firestore.googleapis.com",
     # Enabling the ServiceUsage API allows the new project to be quota checked from now on.
-    "serviceusage.googleapis.com",
-    "billingbudgets.googleapis.com"
+    "serviceusage.googleapis.com"
   ])
   service = each.key
 
@@ -59,12 +56,12 @@ resource "google_firebase_project" "zeile_project" {
 }
 
 resource "google_firebase_web_app" "zeile_app" {
-    provider = google-beta
-    project = google_project.gcp_project.project_id
-    display_name = var.name
-    deletion_policy = "DELETE"
+  provider = google-beta
+  project = google_project.gcp_project.project_id
+  display_name = var.name
+  deletion_policy = "DELETE"
 
-    depends_on = [google_firebase_project.zeile_project]
+  depends_on = [google_firebase_project.zeile_project]
 }
 
 data "google_firebase_web_app_config" "zeile_config" {
@@ -102,20 +99,5 @@ resource "google_firebaserules_ruleset" "firestore" {
   }
 
   project = var.name
-}
-
-resource "google_billing_budget" "budget" {
-  provider = google-beta
-  billing_account = var.billing_account
-  display_name = "5$ Spend"
-  amount {
-    specified_amount {
-      currency_code = "AUD"
-      units = "5"
-    }
-  }
-  threshold_rules {
-      threshold_percent =  0.2 // $1 Alert
-  }
-  depends_on = [ google_project_service.gcp_service ]
+  depends_on = [ google_firestore_database.zeile_firestore ]
 }
