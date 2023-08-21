@@ -1,4 +1,3 @@
-'use client'
 import store from './hooks/store'
 import './globals.css'
 import type { Metadata } from 'next'
