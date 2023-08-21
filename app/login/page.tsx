@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react'
-import * as fb from '@/firebase'
+import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from 'next/navigation';
 import { setUser } from '../hooks/slices/userSlice';
 import { useAppDispatch } from '../hooks/Actions';
@@ -24,7 +24,7 @@ const Login = () => {
   });
 
   const joinRoom = async () => {
-    let uuid = crypto.randomUUID();
+    let uuid = uuidv4();
 
     localStorage.setItem('user', JSON.stringify({ uid: uuid, name: name, colour: colour }))
     dispatch(setUser({ uid: uuid, name: name, colour: colour }));
