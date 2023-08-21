@@ -3,9 +3,10 @@ import { SVGProps } from "react"
 const Zeile = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={150}
-    height={64}
     fill="none"
+    x={0}
+    y={0}
+    viewBox="0 0 150 64"
     {...props}
   >
     <path

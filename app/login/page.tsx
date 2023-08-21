@@ -33,7 +33,7 @@ const Login = () => {
 
   return (
     <div className='flex flex-col items-center'>
-      <Zeile/>
+      <Zeile width={150}/>
       <div className='flex-row flex justify-between w-full mt-12'>
         <input type="text" placeholder='name...' onChange={(e) => setName(e.target.value)} value={name}
           className={`placeholder:text-neutral-50 placeholder:opacity-80 text-neutral-800 ${colour} flex h-14

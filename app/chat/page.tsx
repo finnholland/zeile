@@ -8,6 +8,9 @@ import Send from '../assets/send';
 import { useAppDispatch, useAppSelector } from '../hooks/Actions';
 import { setUser } from '../hooks/slices/userSlice';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import Logout from '../assets/Logout';
+import Zeile from '../assets/Zeile';
 
 let lastMessage = {}
 
@@ -15,6 +18,7 @@ let lastMessage = {}
 export default function Chat() {
   const selector = useAppSelector(state => state);
   const dispatch = useAppDispatch();
+  const router = useRouter()
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -25,10 +29,16 @@ export default function Chat() {
   useEffect(() => {
     if (localStorage.getItem('user')) {
       dispatch(setUser(JSON.parse(localStorage.getItem('user') || '')));
+      loadMessages();
+    } else {
+      router.push('/login', { scroll: false })
     }
-    loadMessages();
 
-    return () => {  messagesListener() };
+    return () => {
+      if (localStorage.getItem('user')) {
+        messagesListener()
+      }
+    };
   }, []);
 
   const loadMessages = async () => {
@@ -157,8 +167,12 @@ export default function Chat() {
   return (
     <div className='flex flex-col max-w-3xl w-full h-full py-10'>
 
-      <div className='flex-row flex justify-between h-16 w-full bg-violet-300 rounded-2xl'>
-        <Link href={'/login'} onClick={() => localStorage.clear()}>logout</Link>
+      <div className='flex-row flex justify-between h-16 w-full bg-violet-300 rounded-2xl items-center min-h-16'>
+        
+        <a target='_blank' className='px-5 w-10' href='https://github.com/finnholland/zeile'>
+          <Zeile height={35}/>
+        </a>
+        <Link href={'/login'} onClick={() => localStorage.clear()} className=' px-5'><Logout /></Link>
       </div>
 
       <div id='scrollDiv' className='flex flex-col-reverse bg-violet-300 max-w-3xl h-4/5 max-h-full w-full px-5 my-8 rounded-2xl overflow-auto'>
