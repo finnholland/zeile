@@ -18,3 +18,5 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_FH_ZEILE }}'
           channelId: live
           projectId: fh-zeile
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
