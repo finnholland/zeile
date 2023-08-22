@@ -3,10 +3,9 @@ import React, { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from 'next/navigation';
 import Zeile from '../assets/Zeile';
+import { colours } from '../constants';
 
-const colours = [
-  'bg-green-400','bg-teal-400','bg-sky-400','bg-indigo-400','bg-purple-400','bg-pink-400','bg-rose-400'
-]
+
 
 const MAX_LENGTH = 16
 const Login = () => {
@@ -34,7 +33,7 @@ const Login = () => {
           <input type="text" placeholder='name...' onChange={(e) => setName(e.target.value.replace(/[^\w.\-\ ]/, '_'))} maxLength={MAX_LENGTH} value={name}
             className={`placeholder:text-neutral-50 placeholder:opacity-80 text-neutral-800 ${colour} flex flex-grow h-full
             pl-5 focus:outline-none`} />
-          <span className='text-xs mb-1 mr-3 text-neutral-600'>remaining: {MAX_LENGTH - name.length}</span>
+          <span className='text-xs mb-1 mr-3 text-neutral-600'>{name.length}/{MAX_LENGTH - name.length}</span>
         </div>
 
       </div>
