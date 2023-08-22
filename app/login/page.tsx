@@ -8,7 +8,7 @@ const colours = [
   'bg-green-400','bg-teal-400','bg-sky-400','bg-indigo-400','bg-purple-400','bg-pink-400','bg-rose-400'
 ]
 
-
+const MAX_LENGTH = 16
 const Login = () => {
   const router = useRouter()
   const [name, setName] = useState('')
@@ -30,9 +30,13 @@ const Login = () => {
     <div className='flex flex-col items-center'>
       <Zeile width={150}/>
       <div className='flex-row flex justify-between w-full mt-12'>
-        <input type="text" placeholder='name...' onChange={(e) => setName(e.target.value)} value={name}
-          className={`placeholder:text-neutral-50 placeholder:opacity-80 text-neutral-800 ${colour} flex h-14
-          flex-grow rounded-2xl pl-5 focus:outline-none focus:border-violet-400 focus:ring-violet-400 focus:ring-2`} />
+        <div className={`rounded-2xl flex h-14 flex-grow items-end overflow-hidden ${colour} focus-within:border-violet-400 focus-within:ring-violet-400 focus-within:ring-2`}>
+          <input type="text" placeholder='name...' onChange={(e) => setName(e.target.value.replace(/[^\w.\-\ ]/, '_'))} maxLength={MAX_LENGTH} value={name}
+            className={`placeholder:text-neutral-50 placeholder:opacity-80 text-neutral-800 ${colour} flex flex-grow h-full
+            pl-5 focus:outline-none`} />
+          <span className='text-xs mb-1 mr-3 text-neutral-600'>remaining: {MAX_LENGTH - name.length}</span>
+        </div>
+
       </div>
       <div className='flex flex-row px-5 py-3 bg-violet-300 rounded-2xl mt-5 mb-10'>
         {colourItem}
