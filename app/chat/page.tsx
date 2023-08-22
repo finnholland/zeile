@@ -5,8 +5,6 @@ import { useEffect, useState } from 'react';
 import { Message, User } from '@/types';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Send from '../assets/send';
-import { useAppDispatch, useAppSelector } from '../hooks/Actions';
-import { setUser } from '../hooks/slices/userSlice';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Logout from '../assets/Logout';
@@ -16,9 +14,9 @@ let lastMessage = {}
 
 
 export default function Chat() {
-  const selector = useAppSelector(state => state);
-  const dispatch = useAppDispatch();
   const router = useRouter()
+
+  const [user, setUser] = useState<User>({name: '', colour: '', uid: ''});
 
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<Message[]>([]);
@@ -28,7 +26,7 @@ export default function Chat() {
   let  messagesListener: any;
   useEffect(() => {
     if (localStorage.getItem('user')) {
-      dispatch(setUser(JSON.parse(localStorage.getItem('user') || '')));
+      setUser(JSON.parse(localStorage.getItem('user') || ''));
       loadMessages();
     } else {
       router.push('/login', { scroll: false })
@@ -104,7 +102,7 @@ export default function Chat() {
     let msg = message;
     const messageRef = fb.collection(fb.db, 'messages');
 
-    await fb.addDoc(messageRef, {text: msg, createdAt: fb.serverTimestamp(), uid: selector.user.uid, name: selector.user.name, colour: selector.user.colour}).then(doc => {
+    await fb.addDoc(messageRef, {text: msg, createdAt: fb.serverTimestamp(), uid: user.uid, name: user.name, colour: user.colour}).then(doc => {
       const messageRef = fb.doc(fb.db, 'messages', doc.id);
       fb.setDoc(messageRef, { messageId: doc.id }, { merge: true });
     });
@@ -155,7 +153,7 @@ export default function Chat() {
   }
   
   const messageItem = messages.map((i) => {
-    return <MessageItem key={i.messageId} msg={i} uid={selector.user.uid} />;
+    return <MessageItem key={i.messageId} msg={i} uid={user.uid} />;
   });
 
   const enterPress = (e: React.KeyboardEvent<HTMLInputElement>) =>{

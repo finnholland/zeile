@@ -2,8 +2,6 @@
 import React, { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from 'next/navigation';
-import { setUser } from '../hooks/slices/userSlice';
-import { useAppDispatch } from '../hooks/Actions';
 import Zeile from '../assets/Zeile';
 
 const colours = [
@@ -16,8 +14,6 @@ const Login = () => {
   const [name, setName] = useState('')
   const [colour, setColour] = useState(colours[Math.floor(Math.random() * ((colours.length -1) - 0 + 1)) + 0])
 
-  const dispatch = useAppDispatch();
-
   const colourItem = colours.map((i) => {
     return <button key={i} onClick={() => setColour(i)}
       className={`${i} w-8 h-8 rounded-lg ${i !== colours[colours.length - 1] ? 'mr-6' : ''} ${i === colour ? 'border-4 border-white' : ''}`} />;
@@ -27,7 +23,6 @@ const Login = () => {
     let uuid = uuidv4();
 
     localStorage.setItem('user', JSON.stringify({ uid: uuid, name: name, colour: colour }))
-    dispatch(setUser({ uid: uuid, name: name, colour: colour }));
     router.push('/chat', { scroll: false })
   }
 

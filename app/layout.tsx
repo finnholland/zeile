@@ -1,8 +1,6 @@
-import store from './hooks/store'
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
-import { Provider } from 'react-redux'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -17,14 +15,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <Provider store={store}>
-      <html lang="en" className=' bg-pink-200 h-screen w-screen content-center justify-center items-center flex'>
-        <body className={`${inter.className} h-screen w-screen justify-center items-center flex`}>
-        
-          {children}
-        
-        </body>
-      </html>
-</Provider>
+    <html lang="en" className=' bg-pink-200 h-screen w-screen content-center justify-center items-center flex'>
+      <body className={`${inter.className} h-screen w-screen justify-center items-center flex`}>
+      
+        {children}
+      
+      </body>
+    </html>
   )
 }
