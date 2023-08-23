@@ -1,9 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Chat from './chat/page';
-import Login from './login/page';
+import { Login, Chat } from '@/components/';
 import Zeile from './assets/Zeile';
  
 export default function Page() {

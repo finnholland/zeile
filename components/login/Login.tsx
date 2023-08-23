@@ -1,11 +1,16 @@
 'use client';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
-import Zeile from '../assets/Zeile';
-import { colours } from '../constants';
+import Zeile from '../../app/assets/Zeile';
+import { colours } from '../../app/constants';
 
 const MAX_LENGTH = 16
-const Login = (props: any) => {
+interface Props {
+  loggedIn: boolean
+  setLoggedIn: Dispatch<SetStateAction<boolean>>
+}
+
+const Login = (props: Props) => {
   const [name, setName] = useState('')
   const [colour, setColour] = useState('bg-pink-300')
   const inputRef = React.createRef<HTMLInputElement>();
@@ -30,6 +35,7 @@ const Login = (props: any) => {
 
   return (
     <div className='flex flex-col items-center'>
+      <span>{props.loggedIn}</span>
       <Zeile width={150}/>
       <div className='flex-row flex justify-between w-full mt-12'>
         <div onClick={handleClick} className={`rounded-2xl flex h-14 flex-grow items-end overflow-hidden ${colour} focus-within:border-violet-400 focus-within:ring-violet-400 focus-within:ring-2`}>

@@ -4,13 +4,17 @@ import * as fb from '@/firebase';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Message, User } from '@/types';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import Send from '../assets/send';
-import Logout from '../assets/Logout';
-import Zeile from '../assets/Zeile';
+import Send from '../../app/assets/send';
+import Logout from '../../app/assets/Logout';
+import Zeile from '../../app/assets/Zeile';
 
 let lastMessage = {}
 
-const Chat = (props: any) => {
+interface Props {
+  loggedIn: boolean
+  setLoggedIn: Dispatch<SetStateAction<boolean>>
+}
+const Chat = (props: Props) => {
   const [user, setUser] = useState<User>({name: '', colour: '', uid: ''});
 
   const [message, setMessage] = useState('');
