@@ -19,6 +19,6 @@ export default function Page() {
   if (!loaded) {
     return <Zeile width={200} />
   } else if (loggedIn) {
-    return <Chat setLoggedIn={setLoggedIn} />
-  } return <Login setLoggedIn={setLoggedIn} />
+    return <Chat setLoggedIn={setLoggedIn} loggedIn={loggedIn} />
+  } return <Login setLoggedIn={setLoggedIn} loggedIn={loggedIn} />
 }

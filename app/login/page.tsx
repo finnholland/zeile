@@ -4,12 +4,8 @@ import { v4 as uuidv4 } from 'uuid';
 import Zeile from '../assets/Zeile';
 import { colours } from '../constants';
 
-interface Props {
-  setLoggedIn: Dispatch<SetStateAction<boolean>>
-}
-
 const MAX_LENGTH = 16
-const Login: React.FC<Props> = (props: Props) => {
+const Login = (props: any) => {
   const [name, setName] = useState('')
   const [colour, setColour] = useState('bg-pink-300')
   const inputRef = React.createRef<HTMLInputElement>();

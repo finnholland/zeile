@@ -10,10 +10,7 @@ import Zeile from '../assets/Zeile';
 
 let lastMessage = {}
 
-interface Props {
-  setLoggedIn: Dispatch<SetStateAction<boolean>>
-}
-const Chat: React.FC<Props> = (props: Props) => {
+const Chat = (props: any) => {
   const [user, setUser] = useState<User>({name: '', colour: '', uid: ''});
 
   const [message, setMessage] = useState('');
@@ -27,7 +24,6 @@ const Chat: React.FC<Props> = (props: Props) => {
       setUser(JSON.parse(localStorage.getItem('user') || ''));
       loadMessages();
     } else {
-      props.setLoggedIn(false)
     }
 
     return () => {
