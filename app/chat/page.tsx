@@ -1,7 +1,7 @@
 'use client';
 
 import * as fb from '@/firebase';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Message, User } from '@/types';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Send from '../assets/send';
@@ -12,8 +12,10 @@ import Zeile from '../assets/Zeile';
 
 let lastMessage = {}
 
-
-export default function Chat() {
+interface Props {
+  setLoggedIn: Dispatch<SetStateAction<boolean>>
+}
+const Chat: React.FC<Props> = (props: Props) => {
   const router = useRouter()
 
   const [user, setUser] = useState<User>({name: '', colour: '', uid: ''});
@@ -29,7 +31,7 @@ export default function Chat() {
       setUser(JSON.parse(localStorage.getItem('user') || ''));
       loadMessages();
     } else {
-      router.push('/login', { scroll: false })
+      props.setLoggedIn(false)
     }
 
     return () => {
@@ -170,7 +172,7 @@ export default function Chat() {
         <a target='_blank' className='px-5 w-10' href='https://github.com/finnholland/zeile'>
           <Zeile height={35}/>
         </a>
-        <Link href={'/login'} onClick={() => localStorage.clear()} className=' px-5'><Logout /></Link>
+        <Logout width={40} className='mx-5 cursor-pointer' onClick={() => { localStorage.clear(); props.setLoggedIn(false) }}/>
       </div>
 
       <div id='scrollDiv' className='flex flex-col-reverse bg-violet-300 max-w-3xl h-4/5 max-h-full w-full px-5 my-8 rounded-2xl overflow-auto'>
@@ -228,3 +230,5 @@ const MessageItem: React.FC<MessageProp> = ({ msg, uid }) => {
     );
   }
 };
+
+export default Chat

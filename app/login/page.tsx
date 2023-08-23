@@ -1,22 +1,28 @@
 'use client';
-import React, { useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { useRouter } from 'next/navigation';
 import Zeile from '../assets/Zeile';
 import { colours } from '../constants';
 
-
+interface Props {
+  setLoggedIn: Dispatch<SetStateAction<boolean>>
+}
 
 const MAX_LENGTH = 16
-const Login = () => {
+const Login: React.FC<Props> = (props: Props) => {
   const router = useRouter()
   const [name, setName] = useState('')
-  const [colour, setColour] = useState(colours[Math.floor(Math.random() * ((colours.length -1) - 0 + 1)) + 0])
+  const [colour, setColour] = useState('bg-pink-300')
   const inputRef = React.createRef<HTMLInputElement>();
   const colourItem = colours.map((i) => {
     return <button key={i} onClick={() => setColour(i)}
       className={`${i} w-8 h-8 rounded-lg ${i !== colours[colours.length - 1] ? 'mr-6' : ''} ${i === colour ? 'border-4 border-white' : ''}`} />;
   });
+
+  useEffect(() => {
+    setColour(colours[Math.floor(Math.random() * ((colours.length -1) - 0 + 1)) + 0])
+  }, [setColour])
 
   const handleClick = () => {
     inputRef.current?.focus();
@@ -25,7 +31,7 @@ const Login = () => {
   const joinRoom = async () => {
     let uuid = uuidv4();
     localStorage.setItem('user', JSON.stringify({ uid: uuid, name: name, colour: colour }))
-    router.push('/chat', { scroll: false })
+    props.setLoggedIn(true)
   }
 
   return (

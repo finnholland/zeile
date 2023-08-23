@@ -1,16 +1,25 @@
 'use client';
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Chat from './chat/page';
+import Login from './login/page';
+import Zeile from './assets/Zeile';
  
 export default function Page() {
-  const router = useRouter()
- 
+  const [loggedIn, setLoggedIn] = useState(false)
+  const [loaded, setLoaded] = useState(false)
   useEffect(() => {
     if (localStorage.getItem('user')) {
-      router.push('/chat')
-    } else {
-      router.push('/login', { scroll: false })
+      
+      setLoggedIn(true)
     }
-  })
+    setLoaded(true)
+  }, [setLoggedIn])
+
+  if (!loaded) {
+    return <Zeile width={200} />
+  } else if (loggedIn) {
+    return <Chat setLoggedIn={setLoggedIn} />
+  } return <Login setLoggedIn={setLoggedIn} />
 }

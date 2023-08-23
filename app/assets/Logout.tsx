@@ -3,9 +3,8 @@ import { SVGProps } from "react"
 const Logout = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={45}
-    height={45}
     fill="none"
+    viewBox="0 0 45 45" 
     {...props}
   >
     <path
