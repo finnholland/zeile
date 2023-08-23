@@ -1,7 +1,6 @@
 'use client';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
-import { useRouter } from 'next/navigation';
 import Zeile from '../assets/Zeile';
 import { colours } from '../constants';
 
@@ -11,7 +10,6 @@ interface Props {
 
 const MAX_LENGTH = 16
 const Login: React.FC<Props> = (props: Props) => {
-  const router = useRouter()
   const [name, setName] = useState('')
   const [colour, setColour] = useState('bg-pink-300')
   const inputRef = React.createRef<HTMLInputElement>();

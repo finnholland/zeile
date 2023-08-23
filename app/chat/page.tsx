@@ -5,8 +5,6 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Message, User } from '@/types';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Send from '../assets/send';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import Logout from '../assets/Logout';
 import Zeile from '../assets/Zeile';
 
@@ -16,8 +14,6 @@ interface Props {
   setLoggedIn: Dispatch<SetStateAction<boolean>>
 }
 const Chat: React.FC<Props> = (props: Props) => {
-  const router = useRouter()
-
   const [user, setUser] = useState<User>({name: '', colour: '', uid: ''});
 
   const [message, setMessage] = useState('');
@@ -39,6 +35,7 @@ const Chat: React.FC<Props> = (props: Props) => {
         messagesListener()
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadMessages = async () => {

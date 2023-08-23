@@ -11,7 +11,6 @@ export default function Page() {
   const [loaded, setLoaded] = useState(false)
   useEffect(() => {
     if (localStorage.getItem('user')) {
-      
       setLoggedIn(true)
     }
     setLoaded(true)
