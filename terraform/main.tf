@@ -39,7 +39,8 @@ resource "google_project_service" "gcp_service" {
     "firebase.googleapis.com",
     "firestore.googleapis.com",
     # Enabling the ServiceUsage API allows the new project to be quota checked from now on.
-    "serviceusage.googleapis.com"
+    "serviceusage.googleapis.com",
+    "cloudbuild.googleapis.com"
   ])
   service = each.key
 

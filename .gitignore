@@ -37,3 +37,4 @@ next-env.d.ts
 terraform.*
 terraform/.tfvars
 .firebase
+terraform/secrets.tfvars
