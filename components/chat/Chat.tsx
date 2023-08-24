@@ -8,6 +8,16 @@ import Send from '../../app/assets/send';
 import Logout from '../../app/assets/Logout';
 import Zeile from '../../app/assets/Zeile';
 
+import * as o from 'obscenity';
+
+const matcher = new o.RegExpMatcher({
+  ...o.englishDataset.build(),
+  ...o.englishRecommendedTransformers,
+});
+const censor = new o.TextCensor().setStrategy(
+  o.keepStartCensorStrategy(o.asteriskCensorStrategy()
+  ));
+
 let lastMessage = {}
 
 interface Props {
@@ -37,6 +47,13 @@ const Chat = (props: Props) => {
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const censorText = (message: string) => {
+    const matches = matcher.getAllMatches(message);
+    const censored = censor.applyTo(message, matches);
+    return censored;
+  };
+
 
   const loadMessages = async () => {
 
@@ -98,7 +115,7 @@ const Chat = (props: Props) => {
   };
 
   const sendMessage = async () => {
-    let msg = message;
+    let msg = censorText(message);
     const messageRef = fb.collection(fb.db, 'messages');
 
     await fb.addDoc(messageRef, {text: msg, createdAt: fb.serverTimestamp(), uid: user.uid, name: user.name, colour: user.colour}).then(doc => {
