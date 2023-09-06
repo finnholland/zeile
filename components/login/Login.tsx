@@ -2,7 +2,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import Zeile from '../../app/assets/Zeile';
-import { colours } from '../../constants';
+import { colours } from '../../app/constants';
 
 const MAX_LENGTH = 16
 interface Props {

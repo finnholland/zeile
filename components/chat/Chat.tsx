@@ -9,7 +9,7 @@ import Logout from '../../app/assets/Logout';
 import Zeile from '../../app/assets/Zeile';
 
 import * as o from 'obscenity';
-import { FIREBASE_TOKEN } from '@/constants';
+import { FIREBASE_TOKEN } from '@/app/constants';
 
 const matcher = new o.RegExpMatcher({
   ...o.englishDataset.build(),
