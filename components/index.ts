@@ -1,4 +1,4 @@
-import Login from "./login/login";
-import Chat from "./chat/chat";
+import Login from "./login/Login";
+import Chat from "./chat/Chat";
 
 export { Chat, Login }

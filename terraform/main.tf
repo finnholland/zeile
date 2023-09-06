@@ -21,6 +21,10 @@ provider "google-beta" {
   user_project_override = false
 }
 
+locals {
+  allow_rules = "rules_version = '2';\n\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    match /{document=**} {\n      allow read: if true;\n      allow write: if 'token' in request.resource.data && request.resource.data.token == '${var.token}';\n    }\n  }\n}"
+}
+
 resource "google_project" "gcp_project" {
   provider = google-beta
   project_id = var.name
@@ -93,7 +97,7 @@ resource "google_firebaserules_release" "primary" {
 resource "google_firebaserules_ruleset" "firestore" {
   source {
     files {
-      content = var.allow_rules
+      content = local.allow_rules
       name    = "firestore.rules"
     }
   }

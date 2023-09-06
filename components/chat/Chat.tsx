@@ -9,6 +9,7 @@ import Logout from '../../app/assets/Logout';
 import Zeile from '../../app/assets/Zeile';
 
 import * as o from 'obscenity';
+import { FIREBASE_TOKEN } from '@/constants';
 
 const matcher = new o.RegExpMatcher({
   ...o.englishDataset.build(),
@@ -118,7 +119,7 @@ const Chat = (props: Props) => {
     let msg = censorText(message);
     const messageRef = fb.collection(fb.db, 'messages');
 
-    await fb.addDoc(messageRef, {text: msg, createdAt: fb.serverTimestamp(), uid: user.uid, name: user.name, colour: user.colour}).then(doc => {
+    await fb.addDoc(messageRef, {text: msg, createdAt: fb.serverTimestamp(), uid: user.uid, name: user.name, colour: user.colour, token: FIREBASE_TOKEN}).then(doc => {
       const messageRef = fb.doc(fb.db, 'messages', doc.id);
       fb.setDoc(messageRef, { messageId: doc.id }, { merge: true });
     });
